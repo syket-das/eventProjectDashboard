@@ -6,14 +6,16 @@ import {
   CardMedia,
   TextField,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../Header';
 import { useUserStore } from '../../store/userStore';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const user = useUserStore((state) => state.user);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
@@ -31,30 +33,38 @@ const Login = () => {
   }, [isAuthenticated]);
 
   const login = async (email, password) => {
-    try {
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/login`,
-        {
-          email: email,
-          password: password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
+    const loginPromise = async () => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/login`,
+          {
+            email: email,
+            password: password,
           },
-        }
-      );
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
-      if (data?.token) {
-        localStorage.setItem('token', data.token);
-        setUser();
-        navigate('/');
-      } else {
-        alert('Invalid credentials');
+        if (data?.token) {
+          localStorage.setItem('token', data.token);
+          setUser();
+          return 'Login successful';
+        } else {
+          throw new Error('Invalid credentials');
+        }
+      } catch (error) {
+        throw error;
       }
-    } catch (error) {
-      console.log(error);
-    }
+    };
+
+    toast.promise(loginPromise(), {
+      loading: 'Loading',
+      success: 'Login successful',
+      error: 'Invalid credentials',
+    });
   };
 
   return (
@@ -113,6 +123,7 @@ const Login = () => {
             variant="contained"
             fullWidth
             onClick={() => login(email, password)}
+            disabled={loading}
           >
             Login
           </Button>
