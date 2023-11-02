@@ -12,10 +12,27 @@ import GeographyChart from '../../components/GeographyChart';
 import BarChart from '../../components/BarChart';
 import StatBox from '../../components/StatBox';
 import ProgressCircle from '../../components/ProgressCircle';
+import { useUsersStore } from '../../store/usersStore';
+import { useAgencyStore } from '../../store/agencyStore';
+import { useServiceStore } from '../../store/serviceStore';
+import { useEffect } from 'react';
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const users = useUsersStore((state) => state.users);
+  const setUsers = useUsersStore((state) => state.setUsers);
+  const agencies = useAgencyStore((state) => state.agencies);
+  const getAgencies = useAgencyStore((state) => state.getAgencies);
+  const services = useServiceStore((state) => state.services);
+  const getServices = useServiceStore((state) => state.getServices);
+
+  useEffect(() => {
+    setUsers();
+    getAgencies();
+    getServices();
+  }, []);
 
   return (
     <Box m="20px">
@@ -55,7 +72,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12"
+            title={agencies?.length}
             subtitle="Verified Agency"
             icon={
               <AssignmentIndIcon
@@ -72,7 +89,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431"
+            title={services.length}
             subtitle="Services Listed"
             icon={
               <MiscellaneousServicesIcon
@@ -106,8 +123,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
+            title={users.length}
+            subtitle="Clients"
             progress="0.30"
             increase="+5%"
             icon={
