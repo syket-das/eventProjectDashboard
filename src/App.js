@@ -4,7 +4,6 @@ import Topbar from './scenes/global/Topbar';
 import Sidebar from './scenes/global/Sidebar';
 import Dashboard from './scenes/dashboard';
 import Team from './scenes/team';
-import Invoices from './scenes/invoices';
 import Contacts from './scenes/contacts';
 import Bar from './scenes/bar';
 import Form from './scenes/form';
@@ -19,6 +18,10 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { useUserStore } from './store/userStore';
+import Agencies from './scenes/agencies';
+import AgencyDetails from './scenes/agencies/AgencyDetails';
+import Services from './scenes/services';
+import ServiceDetails from './scenes/services/ServiceDetails';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -55,6 +58,41 @@ function App() {
                 }
               />
               <Route
+                path="/agencies"
+                element={
+                  <ProtectedRoute>
+                    <Agencies />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/agencies/:agencyId"
+                element={
+                  <ProtectedRoute>
+                    <AgencyDetails />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/services"
+                element={
+                  <ProtectedRoute>
+                    <Services />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/services/:serviceId"
+                element={
+                  <ProtectedRoute>
+                    <ServiceDetails />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/team"
                 element={
                   <ProtectedRoute>
@@ -62,8 +100,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
+              <Route
+                path="/contacts"
+                element={
+                  <ProtectedRoute>
+                    <Contacts />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
