@@ -22,6 +22,7 @@ import Agencies from './scenes/agencies';
 import AgencyDetails from './scenes/agencies/AgencyDetails';
 import Services from './scenes/services';
 import ServiceDetails from './scenes/services/ServiceDetails';
+import Categories from './scenes/categories';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -105,6 +106,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Contacts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/categories"
+                element={
+                  <ProtectedRoute>
+                    <Categories />
                   </ProtectedRoute>
                 }
               />
