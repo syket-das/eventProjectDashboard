@@ -9,19 +9,35 @@ import {
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import { tokens } from '../../theme';
 import { Add } from '@mui/icons-material';
 import DialogComponent from '../../components/DialogComponent';
+import { useServiceRequestStore } from '../../store/serviceRequestStore';
 
 const ServiceRequest = () => {
+  const serviceRequests = useServiceRequestStore(
+    (state) => state.serviceRequests
+  );
+  const getServiceRequests = useServiceRequestStore(
+    (state) => state.getServiceRequests
+  );
+
+  const updateServiceRequest = useServiceRequestStore(
+    (state) => state.updateServiceRequest
+  );
+
   const isNonMobile = useMediaQuery('(min-width:600px)');
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    getServiceRequests();
+  }, []);
 
   return (
     <Box m="20px">
@@ -61,9 +77,10 @@ const ServiceRequest = () => {
         gap={5}
         flexWrap={'wrap'}
       >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i, j) => {
+        {serviceRequests.map((serviceRequest) => {
           return (
             <Card
+              key={serviceRequest.id}
               sx={{
                 minWidth: !isNonMobile ? '100%' : 275,
                 backgroundColor: colors.primary[400],
@@ -71,23 +88,34 @@ const ServiceRequest = () => {
             >
               <CardContent>
                 <Typography
-                  sx={{ fontSize: 14 }}
+                  sx={{
+                    fontSize: 14,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                  }}
                   color="text.secondary"
                   gutterBottom
                 >
-                  Word of the Day
+                  {serviceRequest.category.name}{' '}
+                  {/* <span>
+                    {serviceRequest.startDate.split('-')[1]} -{' '}
+                    {serviceRequest.endDate.split('-')[1]}
+                  </span> */}
                 </Typography>
                 <Typography variant="h5" component="div">
-                  jgjhfghf{' '}
+                  {serviceRequest?.title || 'No title'}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  adjective
+                  {serviceRequest.lowestBudget} - {serviceRequest.highestBudget}
                 </Typography>
-                <Typography variant="body2">
-                  well meaning and kindly.
-                  <br />
-                  {'"a benevolent smile"'}
+                <Typography sx={{ mb: 1 }} color="text.secondary">
+                  {serviceRequest.address.city}, {serviceRequest.address.state},{' '}
+                  {serviceRequest.address.Country},{' '}
+                  {serviceRequest.address.zipCode}
                 </Typography>
+                <Typography variant="body2">{serviceRequest.brief}</Typography>
               </CardContent>
               <CardActions
                 sx={{
@@ -97,6 +125,11 @@ const ServiceRequest = () => {
                 }}
               >
                 <Button
+                  onClick={() =>
+                    updateServiceRequest(serviceRequest.id, {
+                      requestApproval: false,
+                    })
+                  }
                   variant="outlined"
                   sx={{
                     backgroundColor: colors.redAccent[700],
@@ -108,6 +141,11 @@ const ServiceRequest = () => {
                   Reject
                 </Button>
                 <Button
+                  onClick={() =>
+                    updateServiceRequest(serviceRequest.id, {
+                      requestApproval: true,
+                    })
+                  }
                   variant="outlined"
                   sx={{
                     backgroundColor: colors.greenAccent[700],
