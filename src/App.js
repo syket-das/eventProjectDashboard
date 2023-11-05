@@ -23,6 +23,7 @@ import AgencyDetails from './scenes/agencies/AgencyDetails';
 import Services from './scenes/services';
 import ServiceDetails from './scenes/services/ServiceDetails';
 import Categories from './scenes/categories';
+import ServiceRequest from './scenes/serviceRequest';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -114,6 +115,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Categories />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/service-request"
+                element={
+                  <ProtectedRoute>
+                    <ServiceRequest />
                   </ProtectedRoute>
                 }
               />

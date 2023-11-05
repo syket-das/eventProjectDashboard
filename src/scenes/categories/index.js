@@ -1,15 +1,25 @@
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import { tokens } from '../../theme';
 import { Add } from '@mui/icons-material';
 import DialogComponent from '../../components/DialogComponent';
+import { useCategoryStore } from '../../store/categoryStore';
+import toast from 'react-hot-toast';
+import { useNavigate, useNavigation } from 'react-router-dom';
 
 const Categories = () => {
+  const categories = useCategoryStore((state) => state.categories);
+  const getCategories = useCategoryStore((state) => state.getCategories);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <Box m="20px">
@@ -46,27 +56,32 @@ const Categories = () => {
         gap={5}
         flexWrap={'wrap'}
       >
-        <Box
-          backgroundColor={colors.primary[400]}
-          sx={{
-            minWidth: '100px',
-            maxWidth: '150px',
-            minHeight: '100px',
-            maxHeight: '150px',
-            alignItems: 'center',
-            justifyContent: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            sx={{ color: colors.grey[100] }}
+        {categories.map((category) => (
+          <Box
+            key={category.id}
+            backgroundColor={colors.primary[400]}
+            sx={{
+              minWidth: '100px',
+              maxWidth: '200px',
+              minHeight: '100px',
+              maxHeight: '150px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              borderRadius: '10px',
+              padding: 2,
+            }}
           >
-            Title
-          </Typography>
-        </Box>
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              sx={{ color: colors.grey[100] }}
+            >
+              {category.name}
+            </Typography>
+          </Box>
+        ))}
       </Box>
       <DialogComponent
         title={'Add Category'}
@@ -82,8 +97,22 @@ const Categories = () => {
 export default Categories;
 
 const AddCategory = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  const createCategory = useCategoryStore((state) => state.createCategory);
+  const getCategories = useCategoryStore((state) => state.getCategories);
+
+  const handleSubmit = () => {
+    createCategory({ name, description });
+
+    setName('');
+    setDescription('');
+
+    getCategories();
+  };
 
   return (
     <Box mt={4}>
@@ -114,6 +143,23 @@ const AddCategory = () => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button
+          onClick={handleSubmit}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            border: `1px solid ${colors.grey[300]}`,
+          }}
+        >
+          Add
+        </Button>
+      </Box>
     </Box>
   );
 };

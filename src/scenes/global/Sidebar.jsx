@@ -19,7 +19,7 @@ import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { useUserStore } from '../../store/userStore';
-import { Category } from '@mui/icons-material';
+import { Category, RequestPage } from '@mui/icons-material';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -173,12 +173,19 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             >
-              Pages
+              Actions
             </Typography>
             <Item
               title="Categories"
               to="/categories"
               icon={<Category />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Service Request"
+              to="/service-request"
+              icon={<RequestPage />}
               selected={selected}
               setSelected={setSelected}
             />

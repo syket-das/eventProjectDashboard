@@ -7,6 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useTheme } from '@mui/material';
 import { tokens } from '../theme';
+import { Cancel } from '@mui/icons-material';
 const DialogComponent = ({
   children,
   title,
@@ -29,33 +30,17 @@ const DialogComponent = ({
       maxWidth={maxWidth || 'sm'}
       fullWidth
     >
+      <DialogActions>
+        <Button onClick={handleClose} color="error">
+          <Cancel />
+        </Button>
+      </DialogActions>
+
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{description}</DialogContentText>
         {children}
       </DialogContent>
-      <DialogActions>
-        <Button
-          sx={{
-            backgroundColor: colors.redAccent[700],
-            color: colors.grey[100],
-            border: `1px solid ${colors.grey[300]}`,
-          }}
-          onClick={handleClose}
-        >
-          Cancel
-        </Button>
-        <Button
-          sx={{
-            backgroundColor: colors.blueAccent[700],
-            color: colors.grey[100],
-            border: `1px solid ${colors.grey[300]}`,
-          }}
-          onClick={handleClose}
-        >
-          Subscribe
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

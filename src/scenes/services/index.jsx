@@ -30,6 +30,7 @@ const Services = () => {
       headerName: 'Category',
       flex: 1,
       cellClassName: 'name-column--cell',
+      valueGetter: (params) => `${params.row.category.name}`,
     },
 
     {
