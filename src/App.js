@@ -24,6 +24,7 @@ import Services from './scenes/services';
 import ServiceDetails from './scenes/services/ServiceDetails';
 import Categories from './scenes/categories';
 import ServiceRequest from './scenes/serviceRequest';
+import ServiceRequestDetails from './scenes/serviceRequest/ServiceRequestDetails';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -123,6 +124,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ServiceRequest />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/service-request/:serviceRequestId"
+                element={
+                  <ProtectedRoute>
+                    <ServiceRequestDetails />
                   </ProtectedRoute>
                 }
               />

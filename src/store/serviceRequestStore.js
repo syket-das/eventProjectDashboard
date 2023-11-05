@@ -3,6 +3,7 @@ import { create } from 'zustand';
 
 export const useServiceRequestStore = create((set) => ({
   serviceRequests: [],
+  serviceRequest: {},
 
   getServiceRequests: async () => {
     try {
@@ -25,6 +26,26 @@ export const useServiceRequestStore = create((set) => ({
     }
   },
 
+  getServiceRequest: async (serviceRequestId) => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/v1/serviceRequest/${serviceRequestId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      await set({
+        serviceRequest: data.serviceRequest,
+      });
+    } catch (error) {
+      await set({
+        serviceRequest: {},
+      });
+    }
+  },
   updateServiceRequest: async (serviceRequestId, body) => {
     try {
       const { data } = await axios.patch(

@@ -1,6 +1,9 @@
 import {
   Box,
   Button,
+  Chip,
+  Divider,
+  Stack,
   TextField,
   Typography,
   useMediaQuery,
@@ -15,8 +18,10 @@ import { tokens } from '../../theme';
 import { Add } from '@mui/icons-material';
 import DialogComponent from '../../components/DialogComponent';
 import { useServiceRequestStore } from '../../store/serviceRequestStore';
+import { useNavigate } from 'react-router-dom';
 
 const ServiceRequest = () => {
+  const navigate = useNavigate();
   const serviceRequests = useServiceRequestStore(
     (state) => state.serviceRequests
   );
@@ -49,9 +54,15 @@ const ServiceRequest = () => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
+        <Stack direction="row" spacing={1}>
+          <Chip label="Pending" />
+          <Chip label="Approved" variant="outlined" />
+          <Chip label="Rejected" variant="outlined" />
+        </Stack>
         <Button
           sx={{
             backgroundColor: colors.greenAccent[700],
@@ -80,6 +91,9 @@ const ServiceRequest = () => {
         {serviceRequests.map((serviceRequest) => {
           return (
             <Card
+              onDoubleClick={() =>
+                navigate(`/service-request/${serviceRequest.id}`)
+              }
               key={serviceRequest.id}
               sx={{
                 minWidth: !isNonMobile ? '100%' : 275,
@@ -98,11 +112,11 @@ const ServiceRequest = () => {
                   color="text.secondary"
                   gutterBottom
                 >
-                  {serviceRequest.category.name}{' '}
-                  {/* <span>
-                    {serviceRequest.startDate.split('-')[1]} -{' '}
-                    {serviceRequest.endDate.split('-')[1]}
-                  </span> */}
+                  {' '}
+                  <Chip
+                    label={serviceRequest.category.name}
+                    variant="outlined"
+                  />
                 </Typography>
                 <Typography variant="h5" component="div">
                   {serviceRequest?.title || 'No title'}
@@ -115,6 +129,8 @@ const ServiceRequest = () => {
                   {serviceRequest.address.Country},{' '}
                   {serviceRequest.address.zipCode}
                 </Typography>
+                <Divider />
+
                 <Typography variant="body2">{serviceRequest.brief}</Typography>
               </CardContent>
               <CardActions
@@ -124,38 +140,80 @@ const ServiceRequest = () => {
                   mb: 2,
                 }}
               >
-                <Button
-                  onClick={() =>
-                    updateServiceRequest(serviceRequest.id, {
-                      requestApproval: false,
-                    })
-                  }
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: colors.redAccent[700],
-                    color: colors.grey[100],
-                    border: `1px solid ${colors.grey[300]}`,
-                  }}
-                  size="small"
-                >
-                  Reject
-                </Button>
-                <Button
-                  onClick={() =>
-                    updateServiceRequest(serviceRequest.id, {
-                      requestApproval: true,
-                    })
-                  }
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: colors.greenAccent[700],
-                    color: colors.grey[100],
-                    border: `1px solid ${colors.grey[300]}`,
-                  }}
-                  size="small"
-                >
-                  Approve
-                </Button>
+                {serviceRequest.requestApproval === null ? (
+                  <Button
+                    onClick={() =>
+                      updateServiceRequest(serviceRequest.id, {
+                        requestApproval: false,
+                      })
+                    }
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: colors.redAccent[700],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.grey[300]}`,
+                    }}
+                    size="small"
+                  >
+                    Reject
+                  </Button>
+                ) : serviceRequest.requestApproval === true ? (
+                  <Button
+                    onClick={() =>
+                      updateServiceRequest(serviceRequest.id, {
+                        requestApproval: false,
+                      })
+                    }
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: colors.redAccent[700],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.grey[300]}`,
+                    }}
+                    size="small"
+                  >
+                    Reject
+                  </Button>
+                ) : (
+                  <Chip label="Rejected" />
+                )}
+                {serviceRequest.requestApproval === null ? (
+                  <Button
+                    onClick={() =>
+                      updateServiceRequest(serviceRequest.id, {
+                        requestApproval: true,
+                      })
+                    }
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: colors.greenAccent[700],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.grey[300]}`,
+                    }}
+                    size="small"
+                  >
+                    Approve
+                  </Button>
+                ) : serviceRequest.requestApproval === true ? (
+                  <Chip label="Approved" />
+                ) : (
+                  <Button
+                    onClick={() =>
+                      updateServiceRequest(serviceRequest.id, {
+                        requestApproval: true,
+                      })
+                    }
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: colors.greenAccent[700],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.grey[300]}`,
+                    }}
+                    size="small"
+                  >
+                    Approve
+                  </Button>
+                )}
               </CardActions>
             </Card>
           );
