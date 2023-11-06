@@ -13,8 +13,10 @@ import {
 } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../theme';
+import { useBidStore } from '../../store/bidStore';
 
 const ServiceRequestDetails = () => {
+  const updateBid = useBidStore((state) => state.updateBid);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const params = useParams();
@@ -98,7 +100,16 @@ const ServiceRequestDetails = () => {
           }}
         >
           {serviceRequest?.bids?.map((bid) => (
-            <Card key={bid.id} sx={{ minWidth: 275 }}>
+            <Card
+              key={bid.id}
+              sx={{
+                minWidth: 275,
+
+                backgroundColor: bid?.accepted
+                  ? colors.greenAccent[700]
+                  : colors.primary[400],
+              }}
+            >
               <CardContent>
                 <Typography
                   sx={{ fontSize: 14 }}
@@ -121,6 +132,11 @@ const ServiceRequestDetails = () => {
                     color: colors.grey[100],
                     border: `1px solid ${colors.grey[300]}`,
                     ml: 'auto',
+                  }}
+                  onClick={() => {
+                    updateBid(bid.id, {
+                      accepted: true,
+                    });
                   }}
                 >
                   Accept Bid
