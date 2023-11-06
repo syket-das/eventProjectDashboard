@@ -14,8 +14,12 @@ import {
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../theme';
 import { useBidStore } from '../../store/bidStore';
+import { useNavigate } from 'react-router-dom';
+import { Refresh } from '@mui/icons-material';
 
 const ServiceRequestDetails = () => {
+  const navigate = useNavigate();
+
   const updateBid = useBidStore((state) => state.updateBid);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -75,7 +79,21 @@ const ServiceRequestDetails = () => {
           Manpower Needed : {serviceRequest?.manpowerNeeded ? 'Yes' : 'No'}
         </Typography>
 
-        <Divider />
+        <Divider
+          sx={{
+            my: 2,
+          }}
+        />
+
+        <Refresh
+          sx={{
+            cursor: 'pointer',
+            float: 'left',
+          }}
+          onClick={() => {
+            getServiceRequest(serviceRequestId);
+          }}
+        />
 
         <Box
           sx={{
