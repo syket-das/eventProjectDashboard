@@ -83,7 +83,16 @@ const ServiceRequestDetails = () => {
             float: 'right',
           }}
         >
-          Approved Agency: {serviceRequest?.approvedAgency?.name || 'None'}
+          Approved Agency:{'  '}
+          {serviceRequest?.bids
+            ?.filter((bid) => bid?.accepted)
+            .map((bid) => (
+              <Typography key={bid?.id}>
+                {' '}
+                {bid?.agency?.name}
+                {' | '}
+              </Typography>
+            ))}
         </Box>
 
         <Typography variant="h3" textAlign="center" my={4}>
@@ -141,6 +150,24 @@ const ServiceRequestDetails = () => {
                 >
                   Accept Bid
                 </Button>
+                {bid?.accepted && (
+                  <Button
+                    size="small"
+                    sx={{
+                      backgroundColor: colors.redAccent[700],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.grey[300]}`,
+                      ml: 'auto',
+                    }}
+                    onClick={() => {
+                      updateBid(bid.id, {
+                        accepted: false,
+                      });
+                    }}
+                  >
+                    Reject Bid
+                  </Button>
+                )}
               </CardActions>
             </Card>
           ))}
